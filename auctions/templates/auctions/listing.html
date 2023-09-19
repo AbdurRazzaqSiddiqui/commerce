@@ -1,0 +1,109 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+<div>
+    <style>
+        h3 {
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+
+        img {
+            border: 5px solid gray;
+            border-radius: 10px;
+        }
+
+        #inputs {
+            border: 5px solid gray;
+            border-radius: 10px;
+        }
+
+        #head {
+            display: flex;
+        }
+    </style>
+    <div>
+        {% if not list_status %}
+        <div class="alert alert-info" role="alert">
+            {{ winner }}
+        </div>
+        {% endif %}
+        {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+        {% endif %}
+        <div id="head">
+            <h2>Listing: {{ listing.listing_name }}</h2>
+            <div style="padding: 10px;">
+                {% if list_status %}
+                {% if watchlist %}
+                <a href="{% url 'auctions:add_to_watchlist' listing.id %}"><span
+                        class="badge text-bg-secondary">Watchlist</span></a>
+                {% else %}
+                <a href="{% url 'auctions:add_to_watchlist' listing.id %}"><span
+                        class="badge text-bg-secondary">Un-Watch</span></a>
+                {% endif %}
+                {% endif %}
+            </div>
+            {% if list_status %}
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'auctions:close_listing' listing.id %}" style="color: red;">Close this Listing</a>
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'auctions:close_listing' listing.id %}" style="color: red;">Open this Listing</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    <img src="{{ listing.image }}">
+    <h6><em>{{ listing.description }}</em></h6>
+    <h3>${{ listing.start_bid }}</h3>
+
+    {% if list_status and bid_option and listing.highest_bid %}
+    <h5>The current highest bid is: ${{ listing.highest_bid.bidding }}</h5>
+    {% endif %}
+    
+    {% if list_status and bid_option %}
+    <form action="{% url 'auctions:listing' listing.id %}" method="post">
+        {% csrf_token %}
+        <input id="inputs" type="number" name="price" class="price-input" placeholder="Enter Bid" required>
+        <input type="submit" class="btn btn-primary">
+    </form>
+    {% endif %}
+
+    <h3>Details:</h3>
+    <ul>
+        <li>Listed By: <b>{{ listing.user.username }}</b></li>
+        <li>Category: <b>{{ listing.category }}</b></li>
+        <li>Created on: <b>{{ listing.created_at.date }}</b></li>
+    </ul>
+    
+    {% if list_status %}
+    <form action="{% url 'auctions:add_comment' listing.id %}" method="post">
+        {% csrf_token %}
+        <input id="inputs" type="text" name="comment" placeholder="Enter Comment" required>
+        <input type="submit" class="btn btn-primary">
+    </form>
+    {% endif %}
+
+    <h3 style="margin-top: 10px;">Comments:</h3>
+    {% for comment in comments %}
+    <ul>
+        <li style="margin: 2px;">
+            <div>
+                <h5>{{ comment.user.username }}</h5>
+                <p>{{ comment.comment }}</p>
+            </div>
+        </li>
+    </ul>
+    {% empty %}
+    <li>No Comments Yet.</li>
+    {% endfor %}
+</div>
+{% endblock %}

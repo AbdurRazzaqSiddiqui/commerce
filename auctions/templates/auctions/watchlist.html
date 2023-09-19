@@ -1,0 +1,18 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h3>Watchlist</h3>
+    <ul>
+        {% for watchlist in watchlists %}
+            <div class="card" style="width: 18rem;">
+                <img src="{{ watchlist.image }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                <h5 class="card-title">{{ watchlist.listing_name }}</h5>
+                <a href="{% url 'auctions:listing' watchlist.id %}" class="btn btn-primary">Go to Listing</a>
+                </div>
+            </div>
+        {% empty %}
+            <h5>Nothing in Watchlist.</h5>
+        {% endfor %}
+    </ul>
+{% endblock %}

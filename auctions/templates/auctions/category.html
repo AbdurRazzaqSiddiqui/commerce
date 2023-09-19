@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h3>{{ category.category_name }}</h3>
+    <div class="card" style="width: 18rem;">
+        <img src="{{ auction_list.image }}" class="card-img-top" alt="...">
+        <div class="card-body">
+        <h5 class="card-title">{{ auction_list.listing_name }}</h5>
+        <a href="{% url 'auctions:listing' auction_list.id %}" class="btn btn-primary">Go to Listing</a>
+        </div>
+    </div>
+{% endblock %}
